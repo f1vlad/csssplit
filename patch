@@ -1,0 +1,18 @@
+#!/bin/bash
+
+file_to_patch=`ls ./ | grep theme*.css | grep -v bak`
+
+# break file into two lines
+find ./theme_* -type f -print0 | xargs -0 perl -i.bak -pe 's/.activitystream-posts-comments-container .actions/\n\n.activitystream-posts-comments-container .actions/g'
+#find ./theme_* -type f -print0 | xargs -0 perl -i.bak -pe 's/.clearfix{\*zoom:1;}/\n.clearfix{\*zoom:1;}/g'
+
+
+
+# split files into smaller pieces
+split -l 1 $file_to_patch
+
+find . -name "xa*" -print0 | xargs -0 file | sed 's/:.*//' | xargs -I % mv % %.css
+
+string12="@import url('xaa.css');@import url('xab.css');@import url('xac.css');@import url('xad.css');@import url('xae.css');"
+
+echo $string12 > $file_to_patch

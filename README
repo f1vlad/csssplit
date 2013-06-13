@@ -1,0 +1,5 @@
+csssplit
+========
+Simple command line tool allows to split large css files into two files
+while patches original file adding @import to it importing newly created
+pieces. This sometimes can be useful to debug/test IE9 (http://j.mp/1bB9EMk)
