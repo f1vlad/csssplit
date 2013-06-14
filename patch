@@ -1,12 +1,10 @@
 #!/bin/bash
 
 file_to_patch=`ls ./ | grep theme*.css | grep -v bak`
+split_selector=".activitystream-posts-comments-container .actions"
 
 # break file into two lines
-find ./theme_* -type f -print0 | xargs -0 perl -i.bak -pe 's/.activitystream-posts-comments-container .actions/\n\n.activitystream-posts-comments-container .actions/g'
-#find ./theme_* -type f -print0 | xargs -0 perl -i.bak -pe 's/.clearfix{\*zoom:1;}/\n.clearfix{\*zoom:1;}/g'
-
-
+find ./theme_* -type f -print0 | xargs -0 perl -i.bak -pe s/"$split_selector"/"\n$split_selector"/g
 
 # split files into smaller pieces
 split -l 1 $file_to_patch
