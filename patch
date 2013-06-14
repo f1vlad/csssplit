@@ -1,16 +1,26 @@
 #!/bin/bash
 
-file_to_patch=`ls ./ | grep theme*.css | grep -v bak`
-split_selector=".activitystream-posts-comments-container .actions"
+#file_to_patch="theme_fffc1d0c187715bb8991ef837036a073.css"            # file to split
+file_to_patch=`ls ./ | grep theme*.css | grep -v bak`                 # or more wild-card expression
+split_selector=".activitystream-posts-comments-container .actions"     # css selector at which to split
+stringi=""
 
-# break file into two lines
-find ./theme_* -type f -print0 | xargs -0 perl -i.bak -pe s/"$split_selector"/"\n$split_selector"/g
+# optional for minified files
+find ./$file_to_patch -type f -print0 | xargs -0 perl -i.bak -pe s/"$split_selector"/"\n$split_selector"/g
 
-# split files into smaller pieces
+# split file into two
 split -l 1 $file_to_patch
 
 find . -name "xa*" -print0 | xargs -0 file | sed 's/:.*//' | xargs -I % mv % %.css
 
 string12="@import url('xaa.css');@import url('xab.css');@import url('xac.css');@import url('xad.css');@import url('xae.css');"
 
-echo $string12 > $file_to_patch
+ls xa* > filelist.tmp
+exec 0<filelist.tmp
+while read LINE
+do
+  stringi+=\@import\ url\($LINE\)\;
+done
+
+echo $stringi > $file_to_patch
+rm ./*.bak ./*.tmp > /dev/null
