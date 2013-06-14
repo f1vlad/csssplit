@@ -5,16 +5,16 @@ file_to_patch=`ls ./ | grep theme*.css | grep -v bak`                 # or more 
 split_selector=".activitystream-posts-comments-container .actions"     # css selector at which to split
 stringi=""
 
-# optional for minified files
+# assuming file is minified, splitting it at selector into two lines
 find ./$file_to_patch -type f -print0 | xargs -0 perl -i.bak -pe s/"$split_selector"/"\n$split_selector"/g
 
 # split file into two
 split -l 1 $file_to_patch
 
+# add extensions to include files
 find . -name "xa*" -print0 | xargs -0 file | sed 's/:.*//' | xargs -I % mv % %.css
 
-string12="@import url('xaa.css');@import url('xab.css');@import url('xac.css');@import url('xad.css');@import url('xae.css');"
-
+# prepare include commands for main css file
 ls xa* > filelist.tmp
 exec 0<filelist.tmp
 while read LINE
@@ -23,4 +23,6 @@ do
 done
 
 echo $stringi > $file_to_patch
+
+# cleanup
 rm ./*.bak ./*.tmp > /dev/null
